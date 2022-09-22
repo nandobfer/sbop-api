@@ -1,16 +1,18 @@
-const jsonfile = require('jsonfile');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 
-const config = jsonfile.readFileSync('./config.json')
-console.log(config);
 
-const http = require('http');
+var app = express();
 
-const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('Hello World')
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser())
 
-server.listen(config.server.port, config.server.hostname, () => {
-    console.log(`Server running at http://${config.server.hostname}:${config.server.port}/`);
-});
+// ROUTES
+
+const login = require('./routes/login');
+app.use('/api/v1/login', login);
+
+module.exports = app;
